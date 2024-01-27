@@ -14,7 +14,6 @@ def append_to_log(text, log_file_path):
     try:
         with open(log_file_path, 'a') as log_file:
             log_file.write(text + '\n')
-        print(f"Appended to {log_file_path}: {text}")
     except Exception as e:
         print(f"Error appending to log file {log_file_path}: {e}")
 
@@ -28,7 +27,7 @@ def block_packet(packet):
     if 'IP' in packet and packet.ip.src in blocklist:
         print(f"Blocked packet from {packet.ip.src}")
         block_ip(packet.ip.src)
-        append_to_log(f"{packet.ip.src} is blocked at {get_current_time()}","log.txt")
+        append_to_log(f"{get_current_time()} - Blocked IP: {packet.ip.src} ","log.txt")
         return True  # Block the packet
     else:
         return False  # Allow the packet
