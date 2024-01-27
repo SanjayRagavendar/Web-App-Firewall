@@ -1,11 +1,10 @@
 import argparse
-import pyshark
-from modules.add_block import add_block
-from modules.del_block import del_block
-from modules.del_block import block_check
+from modules.checker import add_block
+from modules.checker import del_block
+from modules.checker import block_check
 from modules.print_log import print_log
-from modules.rate_limit import limit_no
-from modules.rate_limit import rate_limit
+from modules.checker import limit_no
+from modules.checker import rate_limit
 from modules.ml_check import ml_predict
 
 
@@ -40,11 +39,5 @@ def process_packet(p):
     except AttributeError:
         pass
 
-def main():
-    capture = pyshark.LiveCapture(interface='wlan0')
-
-    for packet in capture.sniff_continuously():
-        process_packet(packet)
-
-if __name__ == '__main__':
-    main() 
+def check(request):
+    process_packet(request)
