@@ -1,17 +1,33 @@
 import pyshark
+from datetime import datetime
+
 import subprocess
+def get_current_time():
+    current_time = datetime.now().time()
+    return current_time
 
 def block_ip(ip_address):
     # Block the IP address using iptables
     subprocess.run(['iptables', '-A', 'INPUT', '-s', ip_address, '-j', 'DROP'])
     print(f"Blocked {ip_address}")
-# Define the blocklist of IP addresses
-blocklist = {"192.168.1.1", "10.0.0.2","127.0.0.1","216.239.38.120","172.31.98.147","192.168.34.152"}  # Add the IP addresses you want to block
+def append_to_log(text, log_file_path):
+    try:
+        with open(log_file_path, 'a') as log_file:
+            log_file.write(text + '\n')
+    except Exception as e:
+        print(f"Error appending to log file {log_file_path}: {e}")
+
+
+
+# Read IP addresses from the text file and add them to the blocklist
+with open('blocklist.txt', 'r') as file:
+    blocklist = set(map(str.strip, file.readlines()))
 
 def block_packet(packet):
     if 'IP' in packet and packet.ip.src in blocklist:
         print(f"Blocked packet from {packet.ip.src}")
         block_ip(packet.ip.src)
+        append_to_log(f"{get_current_time()} - Blocked IP: {packet.ip.src} ","log.txt")
         return True  # Block the packet
     else:
         return False  # Allow the packet
