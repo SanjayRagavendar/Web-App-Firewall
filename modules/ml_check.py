@@ -249,6 +249,7 @@ class Preprocessor:
         X_resampled, _ = smote.fit_resample(X, self.df["label"])
 
         return X_resampled
+    
 def ml_predict(request):
         data = request.form if request.method == 'POST' else None
         headers_dict = dict(request.headers)
@@ -256,9 +257,12 @@ def ml_predict(request):
         http_uri = request.request_uri
         l = [data, http_uri]
         l += headers
-        return l
-l = ml_predict()
-preprocessor = Preprocessor(df=l)
-X_resampled = preprocessor.analyze()
+        pred=ml_predict()
+        preprocessor=Preprocessor(df=l)
+        X_resampled=preprocessor.analyze()
+        print(X_resampled)
+        if X_resampled >0.5:
+            return 1
+        else:
+            return 0
 
-print(X_resampled)
