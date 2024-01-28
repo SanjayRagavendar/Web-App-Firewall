@@ -14,6 +14,7 @@ parser.add_argument('-u', '--unblock', type=str, help='Unblock a blocked IP')
 parser.add_argument('-l', '--show_log', type=int, help='Display the latest log')
 parser.add_argument('-r', '--requests_per_sec', type=int, help='Enter the number of requests per second')
 parser.add_argument('-m','--requests_per_min',type=int,help='Enter the number of requests per minute')
+parser.add_argument('-w','--web_interface_log',action='store_true',help="Displays the logs at web interface")
 
 args = parser.parse_args()
 
@@ -31,3 +32,5 @@ if args.requests_per_sec:
 
 if args.requests_per_min:
     req_limit_min(args.requests_per_min)
+
+#if args.web_interface_log:

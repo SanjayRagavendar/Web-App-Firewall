@@ -368,6 +368,5 @@ def ml_predict(request):
     predictions = loaded_model.predict(x_test)
     print("prediction=",predictions.mean())
     if predictions.mean() > 0.3:
-        print("Malicious")
-    else:
-        print("Not_malicious")
+        return True
+    return False

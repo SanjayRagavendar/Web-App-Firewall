@@ -1,1 +1,7 @@
 2024-01-28 07:01:39.874328 127.0.0.1 <Request 'http://127.0.0.1:5000/' [GET]> Blocked Request 
+2024-01-28 14:30:20.244690 127.0.0.1 <Request 'http://127.0.0.1:5000/login' [POST]> Blocked Request("Malicious!!")
+2024-01-28 14:30:33.468964 127.0.0.1 <Request 'http://127.0.0.1:5000/' [GET]> Blocked Request
+2024-01-28 14:30:46.977418 127.0.0.1 <Request 'http://127.0.0.1:5000/' [GET]> Blocked Request
+2024-01-28 14:30:49.476810 127.0.0.1 <Request 'http://127.0.0.1:5000/' [GET]> Blocked Request
+2024-01-28 14:30:51.801157 127.0.0.1 <Request 'http://127.0.0.1:5000/' [GET]> Blocked Request
+2024-01-28 14:44:35.082186 127.0.0.1 <Request 'http://127.0.0.1:5000/login' [POST]> Blocked Request("Malicious!!")

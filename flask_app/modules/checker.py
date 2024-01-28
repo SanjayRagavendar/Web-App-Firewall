@@ -13,20 +13,20 @@ limiter = Limiter(
 blocked_ip={}
 
 i=0
-def block_checker(request):
+def block_checker(ip):
     global i
     if i==100:
         i=0
         remove_old_entries()
-    client_ip = request.remote_addr
     i+=1
     
     # Check if the client's IP is in the blacklist
     with open("modules/blocklist.txt","r") as r:
         for blocked_ip in r:
-            if client_ip == blocked_ip.split(':')[0]:
+            if ip == blocked_ip.split(':')[0]:
+                print(blocked_ip.split(':')[0])
                 with open("../logs/log.txt",'a') as f:
-                    f.write(f"{datetime.now()} {client_ip} {str(request)} Blocked Request\n")
+                    f.write(f"{datetime.now()} {ip} {str(request)} Blocked Request\n")
                 return 1
     return 0
 
@@ -84,3 +84,7 @@ def req_limit_min(limit_per_minute):
 def req_limit_sec(limit_per_second):
     limiter._storage_connection_kwargs = {"application_limits": [ f"{limit_per_second} per second"]}
     print(f"Limit updated to {limit_per_second} per second")
+
+def write_log_mal(r):
+    with open("../logs/log.txt",'a') as f:
+        f.write(f'{datetime.now()} {r.remote_addr} {str(request)} Blocked Request("Malicious!!")\n')
