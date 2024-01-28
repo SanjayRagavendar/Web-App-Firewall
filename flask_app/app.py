@@ -1,4 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash,abort
+from modules.checker import check_rate_limit
+from modules.ml_check import ml_predict
+from modules.checker import block_checker
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # Change this to a random secret key
@@ -8,7 +11,7 @@ users = {'aaron': 'test', 'sanjay': 'test'}
 
 @app.route('/')
 def home():
-    return 'Welcome to the Flask Login Example!'
+    return render_template('login.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -24,6 +27,14 @@ def login():
 
     return render_template('login.html')
 
+@app.before_request
+def process_packet():
+    try:
+        if block_checker(request) or  ml_predict(request):
+            abort(403)
+
+    except AttributeError:
+        pass
 
 if __name__ == '__main__':
     app.run(debug=True)

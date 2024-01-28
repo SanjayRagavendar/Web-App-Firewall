@@ -1,11 +1,9 @@
 import argparse
-from modules.checker import add_block
-from modules.checker import del_block
-from modules.checker import block_check
-from modules.print_log import print_log
-from modules.checker import limit_no
-from modules.checker import rate_limit
-from modules.ml_check import ml_predict
+from flask_app.modules.checker import add_block
+from flask_app.modules.checker import del_block
+from flask_app.modules.print_log import print_log
+from flask_app.modules.checker import req_limit_sec
+from flask_app.modules.checker import req_limit_min
 
 
 parser = argparse.ArgumentParser()
@@ -14,7 +12,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-b', '--block', type=str, help='IP Address to block')
 parser.add_argument('-u', '--unblock', type=str, help='Unblock a blocked IP')
 parser.add_argument('-l', '--show_log', type=int, help='Display the latest log')
-parser.add_argument('-r', '--num_requests', type=int, help='Enter the number of requests per second')
+parser.add_argument('-r', '--requests_per_sec', type=int, help='Enter the number of requests per second')
+parser.add_argument('-m','--requests_per_min',type=int,help='Enter the number of requests per minute')
 
 args = parser.parse_args()
 
@@ -27,17 +26,8 @@ if args.unblock:
 if args.show_log:
     print_log(args.show_log)
 
-if args.num_requests:
-    limit_no(args.num_requests)
+if args.requests_per_sec:
+    req_limit_sec(args.requests_per_sec)
 
-def process_packet(p):
-    try:
-        block_check(p)
-        rate_limit(p)
-        ml_predict(p)
-
-    except AttributeError:
-        pass
-
-def check(request):
-    process_packet(request)
+if args.requests_per_min:
+    req_limit_min(args.requests_per_min)

@@ -7,10 +7,11 @@ from nltk.tokenize import RegexpTokenizer
 from nltk.stem import SnowballStemmer
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import StandardScaler
+import joblib
 
 class Preprocessor:
-    def _init_(self, d):
-        self.d = d
+    def _init_(self, df):
+        self.df = df
     def create_dataframe_from_list(l):
         df = pd.DataFrame(l, columns=["Data"])
         return df
@@ -240,29 +241,32 @@ class Preprocessor:
         self.df["url_stemmed"] = self.df["url_tokenized"].apply(lambda x: " ".join([stemmer.stem(word) for word in x if len(word) >= 3]))
 
         # Continue with the remaining code...
-        X = self.df.drop(["query", "label", "url_tokenized", "url_stemmed", "extension", "parameters"], axis=1)
+        X = self.df.drop(["query",  "url_tokenized", "url_stemmed", "extension", "parameters"], axis=1)
         ss = StandardScaler()
         X = ss.fit_transform(X)
 
         # Apply SMOTE
         smote = SMOTE(random_state=42)
-        X_resampled, _ = smote.fit_resample(X, self.df["label"])
+        X_resampled = smote.fit_resample(X)
 
         return X_resampled
     
 def ml_predict(request):
-        data = request.form if request.method == 'POST' else None
-        headers_dict = dict(request.headers)
-        headers = list(headers_dict.values())
-        http_uri = request.request_uri
-        l = [data, http_uri]
-        l += headers
-        pred=ml_predict()
-        preprocessor=Preprocessor(df=l)
-        X_resampled=preprocessor.analyze()
-        print(X_resampled)
-        if X_resampled >0.5:
-            return 1
-        else:
-            return 0
-
+    print("Got")
+    data = request.form if request.method == 'POST' else None
+    headers_dict = dict(request.headers)
+    headers = list(headers_dict.values())
+    http_uri = request.request_uri
+    l = [data, http_uri]
+    l += headers
+    preprocessor=Preprocessor(l)
+    X_resampled=preprocessor.analyze()
+    print(X_resampled)
+    model_path='modules/waf_01.joblib'
+    model=joblib.load(model_path)
+    prediction=model.predict(X_resampled)
+    print(prediction)
+    if prediction < 0.5:
+        return False
+    else:
+        return True
