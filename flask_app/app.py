@@ -30,7 +30,9 @@ def login():
 @app.before_request
 def process_packet():
     try:
-        if block_checker(request) or  ml_predict(request):
+        block_check=block_checker(request)
+        ml_predict_check=ml_predict(request)
+        if block_check or  ml_predict_check:
             abort(403)
 
     except AttributeError:
